@@ -4,8 +4,6 @@
 // @version        2077v.1.6.3
 // @source         https://github.com/ecXbe/Free-Kinopoisk
 // @supportURL     https://github.com/ecXbe/Free-Kinopoisk
-// @updateURL      https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk.user.js
-// @downloadURL    https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk.user.js
 // @description    Allows you to watch movies/series on kinopoisk.ru for free.
 // @description:ru Позволяет вам смотреть фильмы/сериалы на kinopoisk.ru бесплатно.
 // @author         ezX {cps};
@@ -29,6 +27,8 @@
 // @compatible	   Firefox
 // @compatible	   Opera
 // @license        CC-BY-SA-4.0
+// @downloadURL https://update.greasyfork.org/scripts/461423/Free%20kinopoisk.user.js
+// @updateURL https://update.greasyfork.org/scripts/461423/Free%20kinopoisk.meta.js
 // ==/UserScript==
 
 /*
@@ -79,7 +79,7 @@ _________        ___.                                     __
                         setTimeout(function() {
                             let $ConButton = $('button.kinopoisk-watch-online-button').parent();
                             $('button.kinopoisk-watch-online-button').remove();
-                            $ConButton.append($('<button>', {html: '<span class="style_iconLeft__Kq1ig" data-tid="53b4357d"><span class="styles_icon__iKaVd" data-tid="6cb8d12f"></span></span><span class="styles_defaultText__PgVb9 undefined" data-tid="6cb8d12f">Смотреть</span>', class: $oldButton.attr('class')}).click(function() {const site = window.location.href.split('kino'); window.location.href = `${site[0]}ss${site[1]}`;}))
+                            $ConButton.append($('<button>', {html: '<span class="style_iconLeft__Kq1ig" data-tid="53b4357d"><span class="styles_icon__iKaVd" data-tid="6cb8d12f"></span></span><span class="styles_defaultText__PgVb9 undefined" data-tid="6cb8d12f">Смотреть</span>', class: $oldButton.attr('class')}).click(function() {const site = window.location.href.split('kino'); window.open(`${site[0]}ss${site[1]}`, '_blank');}))
 
                             clearInterval(check_load);
                         }, 10);
@@ -93,7 +93,7 @@ _________        ___.                                     __
                 let checkLoad = setInterval(function() {
                     if (!$('.spinner').length || document.readyState === 'complete') {
                         $btnLoad.remove();
-                        ($('div.styles_buttonsContainer__HREZO').length ? $('div.styles_buttonsContainer__HREZO') : $('div.styles_buttonsContainer__r_AHo')).prepend($('<div>', {class: 'styles_button__tQYKG'}).append($('<button>', {class: 'style_button__PNtXT kinopoisk-watch-online-button styles_watchOnlineButton__ruFtI style_buttonSize52__b5OBe style_buttonPlus__TjQez style_buttonLight____6ma style_withIconLeft___Myt9', html: '<span class="style_iconLeft__Kq1ig" data-tid="53b4357d"><span class="styles_icon__iKaVd" data-tid="6cb8d12f"></span></span><span class="styles_defaultText__PgVb9 undefined" data-tid="6cb8d12f">Смотреть</span>'}).click(function() {const site = window.location.href.split('kino'); window.location.href = `${site[0]}ss${site[1]}`})));
+                        ($('div.styles_buttonsContainer__HREZO').length ? $('div.styles_buttonsContainer__HREZO') : $('div.styles_buttonsContainer__r_AHo')).prepend($('<div>', {class: 'styles_button__tQYKG'}).append($('<button>', {class: 'style_button__PNtXT kinopoisk-watch-online-button styles_watchOnlineButton__ruFtI style_buttonSize52__b5OBe style_buttonPlus__TjQez style_buttonLight____6ma style_withIconLeft___Myt9', html: '<span class="style_iconLeft__Kq1ig" data-tid="53b4357d"><span class="styles_icon__iKaVd" data-tid="6cb8d12f"></span></span><span class="styles_defaultText__PgVb9 undefined" data-tid="6cb8d12f">Смотреть</span>'}).click(function() {const site = window.location.href.split('kino'); window.open(`${site[0]}ss${site[1]}`, '_blank')})));
                         clearInterval(checkLoad);
                     }
                 }, 50);
@@ -120,7 +120,7 @@ _________        ___.                                     __
         document.addEventListener('DOMContentLoaded', function() {
 
             $('div#TopAdMb:eq(0), div.topAdPad:eq(0), div#tgWrapper:eq(0)').hide().remove();
-
+            tgWrapper.hide(true);
 
 
             $('body').show();
@@ -256,7 +256,7 @@ _________        ___.                                     __
                                                 $('<span>', {class: 'update_later', text: 'Не сейчас'}).click(function() {$('update').remove(); $('section, info').css('pointer-events', '');})
                                             ).append(
                                                 $('<button>', {class: 'update_now', text: 'Обновить'}).click(function() {
-                                                    window.location.href = 'https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk.user.js'
+                                                    window.open('https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk.user.js', '_blank')
                                                     setTimeout(function() {
                                                         $('.update_buttons, .version_update').remove();
                                                         $('.update_head').text('Вы обновились!');
@@ -546,7 +546,7 @@ _________        ___.                                     __
                                     clearInterval($check_load);
                                     $spin.remove();
                                     setTimeout(function() {
-                                        $old.attr('href', `https://sspoisk.ru/${$new_link[$index]}/${$new_link[$index+1]}/`).find('*').css('filter', '').end().css('pointer-events', 'unset');
+                                        $old.attr('href', `https://sspoisk.ru/${$new_link[$index]}/${$new_link[$index+1]}/`).attr('target', '_blank').find('*').css('filter', '').end().css('pointer-events', 'unset');
                                     }, 10);
                                 }
                             }, 50);
