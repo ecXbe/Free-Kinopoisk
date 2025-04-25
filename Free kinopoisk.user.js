@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/ecXbe/Free-Kinopoisk
-// @version        2077v.1.6.2
+// @version        2077v.1.6.3
 // @source         https://github.com/ecXbe/Free-Kinopoisk
 // @supportURL     https://github.com/ecXbe/Free-Kinopoisk
 // @updateURL      https://github.com/ecXbe/Free-Kinopoisk/raw/main/Free%20kinopoisk.user.js
@@ -11,7 +11,7 @@
 // @author         ezX {cps};
 // @require        http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js
 // @include        /^https:\/\/www\.kinopoisk\.ru\/.*$/
-// @include        /^https:\/\/.*flicksbar\..*$/
+// @include        /^https:\/\/.*flcksbr\..*$/
 // @include        /^https:\/\/thesaurus\.allohalive\..*$/
 // @include        /^https:\/\/.*svetacdn\..*$/
 // @include        /^https:\/\/api\..*\.ws\/.*$/
@@ -557,7 +557,7 @@ _________        ___.                                     __
         } else {
             kinopoisk();
         }
-    } else if (window.location.host.includes('flicksbar') && !(window.location.pathname.includes('kinobox/'))) {
+    } else if (window.location.host.includes('flcksbr') && !(window.location.pathname.includes('kinobox/'))) {
         $('title').text(`Кинопоиск.`);
         watching();
     } else {
