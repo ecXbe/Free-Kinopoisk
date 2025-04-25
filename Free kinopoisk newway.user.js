@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/ecXbe/Free-Kinopoisk
-// @version        2077v.1.7/4.newway
+// @version        2077v.1.7/5.newway
 // @host           https://raw.githubusercontent.com/ecXbe/Free-Kinopoisk/refs/heads/main
 // @source         https://github.com/ecXbe/Free-Kinopoisk
 // @supportURL     https://github.com/ecXbe/Free-Kinopoisk
@@ -11,14 +11,16 @@
 // @description:ru Позволяет вам смотреть фильмы/сериалы на kinopoisk.ru бесплатно.
 // @author         ezX {cps};
 // @require        http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js
-// @require        https://raw.githubusercontent.com/ecXbe/Free-Kinopoisk/refs/heads/main/assets/js/update.js
 // @include        /^https:\/\/www\.kinopoisk\.ru\/.*$/
-// @include        /^https:\/\/.*flicksbar\..*$/
+// @include        /^https:\/\/.*flcksbr\..*$/
 // @include        /^https:\/\/thesaurus\.allohalive\..*$/
 // @include        /^https:\/\/.*svetacdn\..*$/
 // @include        /^https:\/\/api\..*\.ws\/.*$/
 // @include        /^https:\/\/.*kodik\..*$/
 // @include        /^https:\/\/.*\.fotpro135alto\.com\/.*$/
+// @include        /^https:\/\/.*obrut\..*$/
+// @include        /^https:\/\/.*luxembd\..*$/
+// @include        /^https:\/\/.*lumex\..*$/
 // @connect        www.kinopoisk.ru
 // @connect        api.github.com
 // @connect        raw.githubusercontent.com
@@ -73,10 +75,10 @@ _________        ___.                                     __
 (function() {
     'use strict';
     const $ = jQuery.noConflict(true);
+    const $host = GM_info.scriptMetaStr.match(/@host\s+([^\n]+)/)?.[1]?.trim();
 
     function importStyle(filepath) {
-        let $host = GM_info.scriptMetaStr.match(/@host\s+([^\n]+)/)?.[1]?.trim();
-        let $link = `${$host}/${filepath}`;
+        let $link = `${$host}/${filepath}?v=${Date.now()}`;
 
         let $head = $('head');
         if (!$head) return;
@@ -244,91 +246,20 @@ _________        ___.                                     __
                             }, 50)
                         }, 2000)
                     }
-                    
-                    const update = function() {
-
-                        let $host = GM_info.scriptMetaStr.match(/@host\s+([^\n]+)/)?.[1]?.trim();
-                        let $branch = GM_info.script.version.includes('newway') ? 'Free%20kinopoisk%20newway.user.js' : 'Free%20kinopoisk.user.js';
-                    
-                        GM_xmlhttpRequest({
-                            method: "GET",
-                            url: `${$host}/config.json`,
-                            onload: function(response) {
-                    
-                                let $current_version = GM_info.script.version;
-                                let $last_version = JSON.parse(response.responseText).version.newway;
-
-                                if (update_able($current_version, $last_version) === 0) return;
-
-
-                                $('ui').prepend($('<update>', {style: 'display: none'}).append(
-                                    $('<div>').append(
-                                        $('<div>', {class: 'update_menu'}).append(
-                                            $('<h2>', {class: 'update_head', text: 'Доступно обновление'})
-                                        ).append(
-                                            $('<div>', {class: 'update_info'}).append(
-                                                $('<span>', {text: $last_version, class: 'version_update'})
-                                            ).append(
-                                                $('<div>', {class: 'update_list'})
-                                            )
-                                        ).append(
-                                            $('<div>', {class: 'update_buttons'}).append(
-                                                $('<span>', {class: 'update_later', text: 'Не сейчас'}).click(function() {$('update').remove(); $('section, info').css('pointer-events', '');})
-                                            ).append(
-                                                $('<button>', {class: 'update_now', text: 'Обновить'}).click(function() {
-                                                    window.location.href = `https://github.com/ecXbe/Free-Kinopoisk/raw/main/${$branch}`;
-                                                    setTimeout(function() {
-                                                        $('.update_buttons, .version_update').remove();
-                                                        $('.update_head').text('Вы обновились!');
-                                                        $('.update_list').empty().append($('<p>', {class: 'innovation', text: 'Чтобы изменения вступили в силу, перезагрузите страницу'}));
-                                                    }, 1000);
-                                                })
-                                            )
-                                        )
-                                    )
-                                ));
-
-                                GM_xmlhttpRequest({
-                                    method: "GET",
-                                    url: `https://api.github.com/repos/ecXbe/Free-Kinopoisk/commits?path=${$branch}`,
-                                    onload: function(response) {
-                                        let $commit_match = GM_info.script.version.includes('newway') ? 'v2077v(\\.\\d+)+[^; ]*' : 'v2077v(\\.\\d+)+';
-                    
-                                        let $current_version = GM_info.script.version;
-                                        let $versions = JSON.parse(response.responseText).map(s => {
-                                            let $commits = s.commit.message.split('\n\n')[0].match($commit_match);
-                                            return $commits ? $commits[0] : null;
-                                        }).filter(Boolean);
-                                        for (let i in $versions) {
-                                            if (update_able($current_version, $versions[i]) === 0) {
-                                                if (i == 1) {$('span.version_highlighting').remove();}
-                                                break;
-                                            } else if ($versions[i] !== $versions[i-1]) {
-                                                $('.update_list').append($('<span>', {class: 'version_highlighting', text: $versions[i]}));
-                                                let $lastCommit = JSON.parse(response.responseText)[i].commit.message;
-                                                let $lines = $lastCommit.split('\n\n').slice(1).join('\n').split(/\r?\n/);
-
-                                                for (let i = 0; i < $lines.length; i++) {
-                                                    if ($lines[i] === '--RU--') {
-                                                        $('.update_list').append($('<span>', {class: 'highlighting'}));
-                                                    } else {
-                                                        $('.update_list').append($('<p>', {text: $lines[i], class: 'innovation'}))
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        $('update').css('display', '');
-                                        $('section, info').css('pointer-events', 'none');
-                                    }
-                                });
-                            }
-                        });
-                    }
 
                     watching_initialization(false, $NameFilm, $alt_name, $url, $score, $year, $country, $genres, $duration, $slogan, $description);
                     snow();
-                    update();
+
+                    GM_xmlhttpRequest({
+                        method: "GET",
+                        url: `${$host}/assets/js/update.js?v=${Date.now()}`,
+                        onload: function(response) {
+                            let update = new Function('$', 'GM_xmlhttpRequest', 'GM_info', response.responseText);
+                            update($, GM_xmlhttpRequest, GM_info);
+                        }
+                    });
+
+                    $('body').children(':not(ui)').hide().remove();
                 },
                 onerror: function(response) {
                     loading_handler();
@@ -402,7 +333,7 @@ _________        ___.                                     __
                     ).click(function() {
                         if ($('.watch').length) {
                             $('i.watch_mode').removeClass('watch_active');
-                            $('.poster, .kinobox__menu, .united_el, .VideoPleer, .pre_info_arrow, .half_arrow').removeClass('watch');
+                            $('.poster, .kinobox_nav_ul, .united_el, .VideoPleer, .pre_info_arrow, .half_arrow').removeClass('watch');
                             setTimeout(function() {
                                 $('ui').css('transform', 'translateY(-65.8%)');
                                 $(this).css('pointer-events', 'none');
@@ -423,7 +354,7 @@ _________        ___.                                     __
                 )
             ).append(
                 $('<div>', {class: 'watch_mode_container'}).append(
-                    $('<i>', {class: 'watch_mode'}).click(function() {if ($('ui').css('transform') === 'none') {$(this).toggleClass('watch_active'); $('.poster, .kinobox__menu, .united_el, .VideoPleer, .pre_info_arrow, .half_arrow').toggleClass('watch');}})
+                    $('<i>', {class: 'watch_mode'}).click(function() {if ($('ui').css('transform') === 'none') {$(this).toggleClass('watch_active'); $('.poster, .kinobox_nav_ul, .united_el, .VideoPleer, .pre_info_arrow, .half_arrow').toggleClass('watch');}})
                 )
             );
 
@@ -495,7 +426,7 @@ _________        ___.                                     __
 
             window.addEventListener("wheel", function(event) {
                 if (event.deltaY > 0 && !$('update').length) {
-                    if ($('.watch').length) $('i.watch_mode').removeClass('watch_active'); $('.poster, .kinobox__menu, .united_el, .VideoPleer, .pre_info_arrow, .half_arrow').removeClass('watch');
+                    if ($('.watch').length) $('i.watch_mode').removeClass('watch_active'); $('.poster, .kinobox_nav_ul, .united_el, .VideoPleer, .pre_info_arrow, .half_arrow').removeClass('watch');
                     setTimeout(() => {$('ui').css('transform', 'translateY(-65.8%)')});
                 } else if (event.deltaY < 0) {
                     $('ui').css('transform', '');
@@ -513,7 +444,7 @@ _________        ___.                                     __
         $(document).keyup(function(e) {
             if (e.key === 'Escape') {
                 $('i.watch_mode').removeClass('watch_active');
-                $('.poster, .kinobox__menu, .united_el, .VideoPleer, .pre_info_arrow, .half_arrow').removeClass('watch');
+                $('.poster, .kinobox_nav_ul, .united_el, .VideoPleer, .pre_info_arrow, .half_arrow').removeClass('watch');
             }
         })
 
@@ -577,7 +508,7 @@ _________        ___.                                     __
         } else {
             kinopoisk();
         }
-    } else if (window.location.host.includes('flicksbar') && !(window.location.pathname.includes('kinobox/'))) {
+    } else if (window.location.host.includes('flcksbr') && !(window.location.pathname.includes('kinobox/')) && (window.self === window.top)) {
         $('title').text(`Кинопоиск.`);
         watching();
     } else {
