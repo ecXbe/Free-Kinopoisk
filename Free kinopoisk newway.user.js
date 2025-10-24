@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name           Free kinopoisk
 // @namespace      https://github.com/ecXbe/Free-Kinopoisk
-// @version        2077v.1.7/5.newway
+// @version        2077v.1.7/6.newway
 // @host           https://raw.githubusercontent.com/ecXbe/Free-Kinopoisk/refs/heads/main
 // @source         https://github.com/ecXbe/Free-Kinopoisk
 // @supportURL     https://github.com/ecXbe/Free-Kinopoisk
@@ -11,6 +11,7 @@
 // @description:ru Позволяет вам смотреть фильмы/сериалы на kinopoisk.ru бесплатно.
 // @author         ezX {cps};
 // @require        http://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js
+// @inject-into    content
 // @include        /^https:\/\/www\.kinopoisk\.ru\/.*$/
 // @include        /^https:\/\/.*flcksbr\..*$/
 // @include        /^https:\/\/thesaurus\.allohalive\..*$/
@@ -27,14 +28,15 @@
 // @icon           https://www.google.com/s2/favicons?sz=64&domain=kinopoisk.ru
 // @grant          GM_xmlhttpRequest
 // @grant          GM_info
+// @grant          GM.addStyle
 // @run-at         document-body
 // @compatible	   Chrome
 // @compatible	   Edge
 // @compatible	   Firefox
 // @compatible	   Opera
+// @compatible     Safari
 // @license        CC-BY-SA-4.0
 // ==/UserScript==
-/* global update_able */
 
 /*
 _________        ___.                                     __
@@ -91,14 +93,8 @@ _________        ___.                                     __
         })
     }
 
-    function addGlobalStyle(css) {
-        let $head = $('head');
-        if (!$head) return
-        return $('<style>', {type: 'text/css', text: css}).appendTo($head);
-    }
-
     const kinopoisk = function() {
-        window.addEventListener('load', function() {
+        $(window).on("load", function() {
             const $oldButton = $('button.kinopoisk-watch-online-button');
 
             if ($oldButton.length) {
@@ -119,7 +115,7 @@ _________        ___.                                     __
                         setTimeout(function() {
                             let $ConButton = $('button.kinopoisk-watch-online-button').parent();
                             $('button.kinopoisk-watch-online-button').remove();
-                            $ConButton.append($('<button>', {html: '<span class="style_iconLeft__Kq1ig" data-tid="53b4357d"><span class="styles_icon__iKaVd" data-tid="6cb8d12f"></span></span><span class="styles_defaultText__PgVb9 undefined" data-tid="6cb8d12f">Смотреть</span>', class: $oldButton.attr('class')}).click(function() {const site = window.location.href.split('kino'); window.location.href = `${site[0]}ss${site[1]}`;}))
+                            $ConButton.append($('<button>', {html: '<span class="style_iconLeft__9qY8j" data-tid="53b4357d"><span class="styles_icon__UOJnq" data-tid="6cb8d12f"></span></span><span class="styles_defaultText__LTsoD" data-tid="6cb8d12f">Смотреть</span>', class: $oldButton.attr('class')}).click(function() {const site = window.location.href.split('kino'); window.location.href = `${site[0]}ss${site[1]}`;}))
 
                             clearInterval(check_load);
                         }, 10);
@@ -128,12 +124,12 @@ _________        ___.                                     __
             } else {
                 let $spin = $('<div>', {class: 'spinner', style: 'margin-top: 2px'});
 
-                let $btnLoad = $('<div>', {class: 'styles_button__tQYKG'}).append($('<button>', {class: 'style_button__PNtXT style_buttonSize52__b5OBe style_buttonPrimary__ndPAb style_buttonLight____6ma style_withIconLeft___Myt9', style: 'background: rgba(0,0,0,.10) !important; pointer-events: none;', html: '<span class="style_iconLeft__Kq1ig" data-tid="53b4357d"><span class="styles_icon__iKaVd" data-tid="6cb8d12f" style="filter: blur(5px)"></span></span><span class="styles_defaultText__PgVb9 undefined" data-tid="6cb8d12f" style="filter: blur(5px)">Смотреть</span>'}).append($spin)).prependTo($('div.styles_buttonsContainer__HREZO').length ? $('div.styles_buttonsContainer__HREZO') : $('div.styles_buttonsContainer__r_AHo'));
+                let $btnLoad = $('<div>', {class: 'style_root__1_tXA'}).append($('<button>', {class: 'style_button__Awsrq style_buttonSize52__MBeHC style_buttonPrimary__Qn_9l style_buttonLight__C8cK7 style_withIconLeft__USlpL', style: 'background: rgba(0,0,0,.10) !important; pointer-events: none;', html: '<span class="style_iconLeft__9qY8j" data-tid="53b4357d"><span class="styles_icon__UOJnq" style="filter: blur(5px)" data-tid="6cb8d12f"></span></span><span class="styles_defaultText__LTsoD" style="filter: blur(5px)" data-tid="6cb8d12f">Смотреть</span>'}).append($spin)).prependTo($('div[class*="styles_buttonsContainer"]'));
 
                 let checkLoad = setInterval(function() {
                     if (!$('.spinner').length || document.readyState === 'complete') {
                         $btnLoad.remove();
-                        ($('div.styles_buttonsContainer__HREZO').length ? $('div.styles_buttonsContainer__HREZO') : $('div.styles_buttonsContainer__r_AHo')).prepend($('<div>', {class: 'styles_button__tQYKG'}).append($('<button>', {class: 'style_button__PNtXT kinopoisk-watch-online-button styles_watchOnlineButton__ruFtI style_buttonSize52__b5OBe style_buttonPlus__TjQez style_buttonLight____6ma style_withIconLeft___Myt9', html: '<span class="style_iconLeft__Kq1ig" data-tid="53b4357d"><span class="styles_icon__iKaVd" data-tid="6cb8d12f"></span></span><span class="styles_defaultText__PgVb9 undefined" data-tid="6cb8d12f">Смотреть</span>'}).click(function() {const site = window.location.href.split('kino'); window.location.href = `${site[0]}ss${site[1]}`})));
+                        $('div[class*="styles_buttonsContainer"]').prepend($('<div>', {class: 'styles_button__bW_ew'}).append($('<div>', {class: 'watch-online-button styles_containerRoot__gEBlA styles_containerWithShield__eJ3ox'}).append($('<button>', {class: 'style_button__Awsrq kinopoisk-watch-online-button styles_watchOnlineButton__VufaL style_buttonSize52__MBeHC style_buttonPlus__2wkyd style_buttonLight__C8cK7 style_withIconLeft__USlpL', html: '<span class="style_iconLeft__9qY8j" data-tid="53b4357d"><span class="styles_icon__UOJnq" data-tid="6cb8d12f"></span></span><span class="styles_defaultText__LTsoD" data-tid="6cb8d12f">Смотреть</span>'}).click(function() {const site = window.location.href.split('kino'); window.location.href = `${site[0]}ss${site[1]}`}))));
                         clearInterval(checkLoad);
                     }
                 }, 50);
@@ -142,7 +138,6 @@ _________        ___.                                     __
     };
 
     const watching = function() {
-
         $('body').hide();
         $('title').text(`Кинопоиск.`);
 
@@ -157,10 +152,9 @@ _________        ___.                                     __
         }, 10);
         setTimeout(() => clearInterval($remove_ad), 5000);
 
-        document.addEventListener('DOMContentLoaded', function() {
+        $(document).ready(function() {
 
             $('div#TopAdMb:eq(0), div.topAdPad:eq(0), div#tgWrapper:eq(0)').hide().remove();
-
 
             $('body').show();
 
@@ -176,33 +170,36 @@ _________        ___.                                     __
                 headers: {
                     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
                     "Accept-Encoding": "gzip, deflate, br, zstd",
-                    "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+                    "Accept-Language": navigator.language || "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
                     "Connection": "keep-alive",
-                    "DNT": "1",
+                    "DNT": navigator.doNotTrack === "1" ? "1" : "0",
                     "Host": "www.kinopoisk.ru",
                     "Priority": "u=0, i",
-                    "Referer": "https://sso.kinopoisk.ru/",
+                    "Referer": document.referrer || "https://sso.kinopoisk.ru/",
                     "Sec-Fetch-Dest": "document",
                     "Sec-Fetch-Mode": "navigate",
                     "Sec-Fetch-Site": "same-site",
                     "Sec-Fetch-User": "?1",
-                    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:134.0) Gecko/20100101 Firefox/134.0"
+                    "User-Agent": navigator.userAgent
                 },
                 onload: function(response) {
-                    if (response.finalUrl !== $parse_link && response.finalUrl.match(/\/(\d+)\//)[0] !== $parse_link.match(/\/(\d+)\//)[0]) return loading_handler();
+                    if ('finalUrl' in response) {
+                        if (response.finalUrl !== $parse_link && ((response.finalUrl.match(/\/(\d+)\//) || [""])[0] !== $parse_link.match(/\/(\d+)\//)[0])) return loading_handler();
+                    } else if ('responseURL' in response) {
+                        if ((response.responseURL !== $parse_link) && ((response.responseURL.match(/\/(\d+)\//) || [""])[0] !== $parse_link.match(/\/(\d+)\//)[0])) return loading_handler();
+                    }
 
-                    let $NameFilm = $(response.responseText).find('h1.styles_title___itJ6.styles_root__QSToS').children().first().text(); if ($NameFilm === '') {$NameFilm = $(response.responseText).find('h1.styles_title__65Zwx.styles_root__l9kHe').children().first().text()}
-                    let $alt_name = $(response.responseText).find('span.styles_originalTitle__JaNKM').text();
+                    let $NameFilm = $(response.responseText).find('h1[itemprop=name]').children().first().text();
+                    let $alt_name = $(response.responseText).find('span.styles_originalTitle__nZWQK').text();
                     let $url = $(response.responseText).find('img.film-poster').attr('src');
 
-                    let $table = $(response.responseText).find('.styles_root__5PEXQ').parents().eq(1);
                     let $score = $(response.responseText).find('.film-rating-value').children().eq(0).text() !== '–' ? parseFloat($(response.responseText).find('.film-rating-value').children().eq(0).text(), 10) : $(response.responseText).find('.film-rating-value').children().eq(0).text();
-                    let $year = $table.children().first().children().eq(1).children().eq(0).text();
-                    let $country = $(response.responseText).find('.styles_root__5PEXQ').parent().prev().children().eq(1).text();
-                    let $genres = $(response.responseText).find('.styles_root__5PEXQ').children().first().find("a").map(function() {return $(this).text()}).get().join(', ');
-                    let $duration = $table.children().last().children().eq(1).children().eq(0).text();
-                    let $slogan = $(response.responseText).find('.styles_root__5PEXQ').parent().next().children().eq(1).text();
-                    let $description = $(response.responseText).find('.styles_paragraph__wEGPz').text();
+                    let $year = $(response.responseText).find('div[data-test-id="year"]').children().eq(1).children().eq(0).text();;
+                    let $country = $(response.responseText).find('div[data-test-id="countries"]').children().eq(1).text();
+                    let $genres = $(response.responseText).find('div[data-test-id="genres"]').children().eq(1).find("a").map(function() {return $(this).text()}).get().join(', ');
+                    let $duration = $(response.responseText).find('div[data-test-id="duration"]').children().eq(1).children().eq(0).text();
+                    let $slogan = $(response.responseText).find('div[data-test-id="tagline"]').children().eq(1).text();
+                    let $description = $(response.responseText).find('.styles_paragraph__V0fA2').text();
 
                     const snow = function() {
                         let now = new Date();
@@ -258,8 +255,15 @@ _________        ___.                                     __
                             update($, GM_xmlhttpRequest, GM_info);
                         }
                     });
-
-                    $('body').children(':not(ui)').hide().remove();
+                    
+                    
+                    let clearBody = setInterval(function() {
+                        $('body').children(':not(ui)').hide().remove();
+                    }, 50);
+                    setTimeout(function() {
+                        clearInterval(clearBody);
+                    }, 5000);
+                    
                 },
                 onerror: function(response) {
                     loading_handler();
@@ -424,11 +428,11 @@ _________        ___.                                     __
             let $stars = Math.round($score / 2);
             for (let i=1; i<=$stars; i++) {$('.star').filter(':not(.active-star)').eq(0).addClass('active-star')}
 
-            window.addEventListener("wheel", function(event) {
-                if (event.deltaY > 0 && !$('update').length) {
+            $(window).on('wheel', function(event) {
+                if (event.originalEvent.deltaY > 0 && !$('update').length) {
                     if ($('.watch').length) $('i.watch_mode').removeClass('watch_active'); $('.poster, .kinobox_nav_ul, .united_el, .VideoPleer, .pre_info_arrow, .half_arrow').removeClass('watch');
                     setTimeout(() => {$('ui').css('transform', 'translateY(-65.8%)')});
-                } else if (event.deltaY < 0) {
+                } else if (event.originalEvent.deltaY < 0) {
                     $('ui').css('transform', '');
                 }
             });
@@ -454,8 +458,8 @@ _________        ___.                                     __
     }
 
     if (window.location.host === 'www.kinopoisk.ru') {
-        addGlobalStyle(`@keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} @-webkit-keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} .spinner {display: block;position: absolute;transform: translate(-50%, -50%);width: 30px;height: 30px;border-radius: 50%;border: 4px solid rgba(0, 0, 0, 0.1);border-width: 6px;border-top-color: #b5b5b5;animation: spinner 0.6s linear infinite;} font[size='70'] {font: 25px normal tahoma, verdana, arial, sans-serif;}`)
-        document.addEventListener('DOMContentLoaded', function() {
+        GM.addStyle(`@keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} @-webkit-keyframes spinner {0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);}} .spinner {display: block;position: absolute;transform: translate(-50%, -50%);width: 30px;height: 30px;border-radius: 50%;border: 4px solid rgba(0, 0, 0, 0.1);border-width: 6px;border-top-color: #b5b5b5;animation: spinner 0.6s linear infinite;} font[size='70'] {font: 25px normal tahoma, verdana, arial, sans-serif;}`)
+        $(document).ready(function () {
             $('body').on('mousedown', 'a[href]:not([href*="?"]):not([target="_blank"])', function() {
                 $(this).off();
                 let url = $(this).attr('href');
@@ -475,7 +479,7 @@ _________        ___.                                     __
             }, 200);
         });
         if (!window.location.pathname.includes('/film') && !window.location.pathname.includes('/series')) {
-            document.addEventListener('DOMContentLoaded', function() {
+            $(document).ready(function () {
                 setInterval(function() {
                     $('a:not(.processed)').each(function() {
                         if ($(this).text().trim() === "Смотреть") {
